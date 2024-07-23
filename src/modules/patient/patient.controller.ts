@@ -12,6 +12,7 @@ import {
 import { PatientRepository } from './patient.repository';
 import IPatient from './patient.entity';
 import ValidCPF from 'src/utils/validCPF';
+import FormatData from 'src/utils/formatData';
 
 @Controller('patient')
 export class PatientController {
@@ -25,12 +26,7 @@ export class PatientController {
                 throw new Error('Data is required');
             }
 
-            const formattedPatient = {
-                ...patient,
-                cpf: ValidCPF(patient.cpf),
-                birthdate: new Date(patient.birthdate)
-            };
-
+            const formattedPatient = { ...patient, cpf: ValidCPF(patient.cpf), birthdate: FormatData(patient.birthdate) };
             const novoPaciente = await this.repo.create(formattedPatient);
             return {
                 statusCode: HttpStatus.CREATED,
@@ -62,11 +58,7 @@ export class PatientController {
                 throw new Error('Invalid CPF format');
             }
 
-            const formattedPatient = {
-                ...patient,
-                cpf: ValidCPF(patient.cpf),
-                birthdate: new Date(patient.birthdate)
-            };
+            const formattedPatient = { ...patient, cpf: ValidCPF(patient.cpf), birthdate: FormatData(patient.birthdate) };
             const updatedPatient = await this.repo.update(formattedPatient);
             return {
                 statusCode: HttpStatus.CREATED,

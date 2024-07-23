@@ -12,10 +12,12 @@ import {
 import { DoctorRepository } from './doctor.repository';
 import IDoctor from './doctor.entity';
 import ValidCPF from 'src/utils/validCPF';
+import FormatData from 'src/utils/formatData';
+import { AppointmentRepository } from '../appointment/appointment.repository';
 
 @Controller('doctor')
 export class DoctorController {
-    constructor(private repo: DoctorRepository) { }
+    constructor(private repo: DoctorRepository, private appointmentRepo: AppointmentRepository) { }
 
     @Post('create')
     async create(@Body() doctor: IDoctor) {
@@ -24,7 +26,7 @@ export class DoctorController {
                 throw new Error('Data is required');
             }
 
-            const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: new Date(doctor.birthdate) };
+            const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: FormatData(doctor.birthdate) };
 
             const newDoctor = await this.repo.create(formattedDoctor);
             return {
@@ -49,7 +51,7 @@ export class DoctorController {
                 throw new Error('Data is required');
             }
 
-            const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: new Date(doctor.birthdate) };
+            const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: FormatData(doctor.birthdate) };
             const updateddoctor = await this.repo.update(formattedDoctor);
 
             return {
@@ -66,24 +68,24 @@ export class DoctorController {
         }
     }
 
-    // @Delete('delete/:id')
-    // async delete(@Param('id') id: string) {
-    //     try {
-    //         await this.appointmentRepo.delete({ doctorId: +id });
-    //         const doctor = await this.repo.delete(+id);
-    //         return {
-    //             statusCode: HttpStatus.CREATED,
-    //             message: 'Doctor deleted successfully',
-    //             data: doctor,
-    //         };
-    //     } catch (error) {
-    //         throw new HttpException({
-    //             statusCode: HttpStatus.BAD_REQUEST,
-    //             message: 'Doctor delete failed',
-    //             error: error.message.includes('Record to delete does not exist') ? 'Doctor not found' : error.message,
-    //         }, HttpStatus.BAD_REQUEST);
-    //     }
-    // }
+    @Delete('delete/:id')
+    async delete(@Param('id') id: string) {
+        try {
+            await this.appointmentRepo.deleteDoctorAppointments(+id);
+            const doctor = await this.repo.delete(+id);
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Doctor deleted successfully',
+                data: doctor,
+            };
+        } catch (error) {
+            throw new HttpException({
+                statusCode: HttpStatus.BAD_REQUEST,
+                message: 'Doctor delete failed',
+                error: error.message.includes('Record to delete does not exist') ? 'Doctor not found' : error.message,
+            }, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @Get('getAll')
     async getAll() {
