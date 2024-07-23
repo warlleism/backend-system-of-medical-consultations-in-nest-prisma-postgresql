@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/db/prisma.service";
 import IPatient from "./patient.entity";
 
-
 @Injectable()
 export class PatientRepository {
     constructor(private prismaService: PrismaService) { }

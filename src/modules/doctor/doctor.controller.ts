@@ -1,4 +1,124 @@
-import { Controller } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Patch,
+    Post,
+} from '@nestjs/common';
+import { DoctorRepository } from './doctor.repository';
+import IDoctor from './doctor.entity';
+import ValidCPF from 'src/utils/validCPF';
 
 @Controller('doctor')
-export class DoctorController {}
+export class DoctorController {
+    constructor(private repo: DoctorRepository) { }
+
+    @Post('create')
+    async create(@Body() doctor: IDoctor) {
+        try {
+            if (!doctor || Object.keys(doctor).length === 0) {
+                throw new Error('Data is required');
+            }
+
+            const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: new Date(doctor.birthdate) };
+
+            const newDoctor = await this.repo.create(formattedDoctor);
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Doctor created successfully',
+                data: newDoctor,
+            };
+        } catch (error) {
+            throw new HttpException({
+                statusCode: HttpStatus.BAD_REQUEST,
+                message: 'Doctor creation failed',
+                error: error.message.includes('Unique constraint failed on the fields: (`cpf`)') ? 'Doctor already exists' : error.message,
+            }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Patch('update')
+    async update(@Body() doctor: IDoctor) {
+        try {
+
+            if (!doctor || Object.keys(doctor).length === 0) {
+                throw new Error('Data is required');
+            }
+
+            const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: new Date(doctor.birthdate) };
+            const updateddoctor = await this.repo.update(formattedDoctor);
+
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Doctor updated successfully',
+                data: updateddoctor,
+            };
+        } catch (error) {
+            throw new HttpException({
+                statusCode: HttpStatus.BAD_REQUEST,
+                message: 'Doctor update failed',
+                error: error.message,
+            }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // @Delete('delete/:id')
+    // async delete(@Param('id') id: string) {
+    //     try {
+    //         await this.appointmentRepo.delete({ doctorId: +id });
+    //         const doctor = await this.repo.delete(+id);
+    //         return {
+    //             statusCode: HttpStatus.CREATED,
+    //             message: 'Doctor deleted successfully',
+    //             data: doctor,
+    //         };
+    //     } catch (error) {
+    //         throw new HttpException({
+    //             statusCode: HttpStatus.BAD_REQUEST,
+    //             message: 'Doctor delete failed',
+    //             error: error.message.includes('Record to delete does not exist') ? 'Doctor not found' : error.message,
+    //         }, HttpStatus.BAD_REQUEST);
+    //     }
+    // }
+
+    @Get('getAll')
+    async getAll() {
+        try {
+            const doctors = await this.repo.getAll();
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Get All doctors successfully',
+                data: doctors,
+            };
+        } catch (error) {
+            throw new HttpException({
+                statusCode: HttpStatus.BAD_REQUEST,
+                message: 'Get All doctors failed',
+                error: error.message,
+            }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Get('getOne/:id')
+    async getOneById(@Param('id') id: string) {
+        try {
+            const doctor = await this.repo.getOneById(+id);
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: doctor == null ? 'Doctor not found' : 'Get One doctor successfully',
+                data: doctor == null ? [] : doctor,
+            };
+        } catch (error) {
+            throw new HttpException({
+                statusCode: HttpStatus.BAD_REQUEST,
+                message: 'Get One doctor failed',
+                error: error.message,
+            }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+}

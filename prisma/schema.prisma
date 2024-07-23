@@ -19,7 +19,7 @@ model User {
 model Doctor {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(100)
-  specialty   String        @db.VarChar(100)
+  speciality  String        @db.VarChar(100)
   cpf         String        @unique
   gender      String
   phone       String

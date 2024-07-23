@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { PatientRepository } from './patient.repository';
 import IPatient from './patient.entity';
+import ValidCPF from 'src/utils/validCPF';
 
 @Controller('patient')
 export class PatientController {
@@ -19,10 +20,17 @@ export class PatientController {
     @Post('create')
     async create(@Body() patient: IPatient) {
         try {
+
+            if (!patient || Object.keys(patient).length === 0) {
+                throw new Error('Data is required');
+            }
+
             const formattedPatient = {
                 ...patient,
+                cpf: ValidCPF(patient.cpf),
                 birthdate: new Date(patient.birthdate)
             };
+
             const novoPaciente = await this.repo.create(formattedPatient);
             return {
                 statusCode: HttpStatus.CREATED,
@@ -41,8 +49,22 @@ export class PatientController {
     @Patch('update')
     async update(@Body() patient: IPatient) {
         try {
+
+            const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+
+            if (!patient || Object.keys(patient).length === 0) {
+                throw new Error('Data is required');
+            }
+
+            let cpf = patient.cpf.trim();
+
+            if (!cpfRegex.test(cpf)) {
+                throw new Error('Invalid CPF format');
+            }
+
             const formattedPatient = {
                 ...patient,
+                cpf: ValidCPF(patient.cpf),
                 birthdate: new Date(patient.birthdate)
             };
             const updatedPatient = await this.repo.update(formattedPatient);
@@ -55,7 +77,7 @@ export class PatientController {
             throw new HttpException({
                 statusCode: HttpStatus.BAD_REQUEST,
                 message: 'Patient update failed',
-                error: error.message,
+                error: error.message.includes('Record to update not found.') ? 'Patient not exists' : error.message,
             }, HttpStatus.BAD_REQUEST);
         }
     }
