@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import IUser from './user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Controller('user')
 export class UserController {
@@ -19,7 +20,9 @@ export class UserController {
     @Post('create')
     async create(@Body() user: IUser) {
         try {
-            const novoUsuario = await this.repo.create(user);
+            const hashPassword = await bcrypt.hash(user.password, 10)
+            const formatedPassword = { ...user, password: hashPassword }
+            const novoUsuario = await this.repo.create(formatedPassword);
             return {
                 statusCode: HttpStatus.CREATED,
                 message: 'User created successfully',
@@ -33,6 +36,7 @@ export class UserController {
             }, HttpStatus.BAD_REQUEST);
         }
     }
+
     @Get('getAll')
     async getAll() {
         try {

@@ -6,6 +6,8 @@ import IUser from './user.entity';
 export class UserRepository {
   constructor(private prismaService: PrismaService) { }
 
+  //CRUD
+
   async getAll() {
     return this.prismaService.user.findMany();
   }
@@ -38,6 +40,16 @@ export class UserRepository {
     return this.prismaService.user.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  //Authentication
+
+  async login(user: IUser) {
+    return this.prismaService.user.findUnique({
+      where: {
+        email: user.email,
       },
     });
   }

@@ -10,7 +10,7 @@ import { DbModule } from './db/db.module';
     AppointmentModule,
     DoctorModule,
     PatientModule,
-    DbModule
+    DbModule,
   ],
   controllers: [],
   providers: [],
