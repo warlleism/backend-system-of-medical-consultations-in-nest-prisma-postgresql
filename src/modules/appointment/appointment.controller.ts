@@ -63,7 +63,7 @@ export class AppointmentController {
         }
     }
 
-    @Get('getOne/:id')
+    @Get('getOneById/:id')
     async getOne(@Param('id') id: number) {
         try {
             const appointment = await this.repo.getOne(+id);

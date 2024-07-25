@@ -110,7 +110,7 @@ export class PatientController {
         }
     }
 
-    @Get('getOne/:id')
+    @Get('getOneById/:id')
     async getOneById(@Param('id') id: string) {
         try {
             const patient = await this.repo.getOneById(+id);
