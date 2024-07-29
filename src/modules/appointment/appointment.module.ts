@@ -19,7 +19,7 @@ export class AppointmentModule {
         { path: 'appointment/getAll', method: RequestMethod.GET },
         { path: 'appointment/getOneById/:id', method: RequestMethod.GET },
         { path: 'appointment/delete/:id', method: RequestMethod.DELETE },
-        { path: 'appointment/update/:id', method: RequestMethod.PATCH },
+        { path: 'appointment/update', method: RequestMethod.PATCH },
       );
   }
 }

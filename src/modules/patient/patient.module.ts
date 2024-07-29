@@ -19,7 +19,7 @@ export class PatientModule {
         { path: 'patient/getAll', method: RequestMethod.GET },
         { path: 'patient/getOneById/:id', method: RequestMethod.GET },
         { path: 'patient/delete/:id', method: RequestMethod.DELETE },
-        { path: 'patient/update/:id', method: RequestMethod.PATCH },
+        { path: 'patient/update', method: RequestMethod.PATCH },
       );
   }
 }

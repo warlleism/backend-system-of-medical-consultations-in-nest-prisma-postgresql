@@ -20,7 +20,7 @@ export class DoctorModule {
         { path: 'user/getAll', method: RequestMethod.GET },
         { path: 'user/getOneById/:id', method: RequestMethod.GET },
         { path: 'user/delete/:id', method: RequestMethod.DELETE },
-        { path: 'user/update/:id', method: RequestMethod.PATCH },
+        { path: 'user/update', method: RequestMethod.PATCH },
       );
   }
 }

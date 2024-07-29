@@ -22,8 +22,14 @@ export class DoctorController {
     @Post('create')
     async create(@Body() doctor: IDoctor) {
         try {
-            if (!doctor || Object.keys(doctor).length === 0) {
-                throw new Error('Data is required');
+
+            if (Object.values(doctor).some(value =>
+                (typeof value === 'string' && value.trim().length === 0) || value === null || value === undefined
+            )) {
+                throw new HttpException({
+                    statusCode: HttpStatus.BAD_REQUEST,
+                    message: 'fields are required',
+                }, HttpStatus.BAD_REQUEST);
             }
 
             const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: FormatData(doctor.birthdate) };
@@ -47,8 +53,13 @@ export class DoctorController {
     async update(@Body() doctor: IDoctor) {
         try {
 
-            if (!doctor || Object.keys(doctor).length === 0) {
-                throw new Error('Data is required');
+            if (Object.values(doctor).some(value =>
+                (typeof value === 'string' && value.trim().length === 0) || value === null || value === undefined
+            )) {
+                throw new HttpException({
+                    statusCode: HttpStatus.BAD_REQUEST,
+                    message: 'fields are required',
+                }, HttpStatus.BAD_REQUEST);
             }
 
             const formattedDoctor = { ...doctor, cpf: ValidCPF(doctor.cpf), birthdate: FormatData(doctor.birthdate) };

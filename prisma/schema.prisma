@@ -50,7 +50,7 @@ model Appointment {
 
 model Result {
   id            Int         @id @default(autoincrement())
-  appointmentid Int
+  appointmentid Int         @unique
   resultdata    String      @db.Text
   appointment   Appointment @relation(fields: [appointmentid], references: [id])
 }

@@ -10,6 +10,16 @@ export class AppointmentController {
     @Post('create')
     async create(@Body() appointment: IAppointment) {
         try {
+
+            if (Object.values(appointment).some(value =>
+                (typeof value === 'string' && value.trim().length === 0) || value === null || value === undefined
+            )) {
+                throw new HttpException({
+                    statusCode: HttpStatus.BAD_REQUEST,
+                    message: 'fields are required',
+                }, HttpStatus.BAD_REQUEST);
+            }
+
             const formattedAppointment = { ...appointment, appointmentdate: FormatData(appointment.appointmentdate) };
             const result = await this.repo.create(formattedAppointment);
             return {
@@ -29,6 +39,16 @@ export class AppointmentController {
     @Patch('update')
     async update(@Body() appointment: IAppointment) {
         try {
+
+            if (Object.values(appointment).some(value =>
+                (typeof value === 'string' && value.trim().length === 0) || value === null || value === undefined
+            )) {
+                throw new HttpException({
+                    statusCode: HttpStatus.BAD_REQUEST,
+                    message: 'fields are required',
+                }, HttpStatus.BAD_REQUEST);
+            }
+
             const formattedAppointment = { ...appointment, appointmentdate: FormatData(appointment.appointmentdate) };
             const result = await this.repo.update(formattedAppointment);
             return {
