@@ -6,8 +6,28 @@ import IPatient from "./patient.entity";
 export class PatientRepository {
     constructor(private prismaService: PrismaService) { }
 
-    async getAll() {
-        return this.prismaService.patient.findMany();
+    async getAll(page: number, pageSize: number) {
+        const skip = (page - 1) * pageSize;
+        const take = pageSize;
+
+        const patients = await this.prismaService.patient.findMany({
+            skip,
+            take,
+        });
+
+        const total = await this.prismaService.patient.count();
+
+        return {
+            patients: patients,
+            pagination: {
+                total,
+                page,
+                pageSize,
+                totalPages: Math.ceil(total / pageSize),
+            }
+        };
+
+
     }
 
     async getOneById(id: number) {

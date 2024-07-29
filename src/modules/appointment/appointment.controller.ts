@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { AppointmentRepository } from './appointment.repository';
 import IAppointment from './appointment.entity';
 import FormatData from 'src/utils/formatData';
@@ -66,9 +66,19 @@ export class AppointmentController {
     }
 
     @Get('getAll')
-    async getAll() {
+    async getAll(@Query('page') page: string = '1', @Query('pageSize') pageSize: string = '10') {
         try {
-            const doctors = await this.repo.getAll();
+            const pageNumber = parseInt(page);
+            const sizeNumber = parseInt(pageSize);
+
+            if (isNaN(pageNumber) || isNaN(sizeNumber) || pageNumber <= 0 || sizeNumber <= 0) {
+                throw new HttpException({
+                    statusCode: HttpStatus.BAD_REQUEST,
+                    message: 'Invalid pagination parameters',
+                    error: 'Page and pageSize must be positive integers',
+                }, HttpStatus.BAD_REQUEST);
+            }
+            const doctors = await this.repo.getAll(pageNumber, sizeNumber);
             return {
                 statusCode: HttpStatus.CREATED,
                 message: 'Get All doctors successfully',

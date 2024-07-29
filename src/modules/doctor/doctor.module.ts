@@ -16,11 +16,11 @@ export class DoctorModule {
     consumer
       .apply(LoggerMiddleware)
       .forRoutes(
-        { path: 'user/create', method: RequestMethod.POST },
-        { path: 'user/getAll', method: RequestMethod.GET },
-        { path: 'user/getOneById/:id', method: RequestMethod.GET },
-        { path: 'user/delete/:id', method: RequestMethod.DELETE },
-        { path: 'user/update', method: RequestMethod.PATCH },
+        { path: 'doctor/create', method: RequestMethod.POST },
+        { path: 'doctor/getAll', method: RequestMethod.GET },
+        { path: 'doctor/getOneById/:id', method: RequestMethod.GET },
+        { path: 'doctor/delete/:id', method: RequestMethod.DELETE },
+        { path: 'doctor/update', method: RequestMethod.PATCH },
       );
   }
 }

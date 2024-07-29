@@ -8,6 +8,7 @@ import {
     Param,
     Patch,
     Post,
+    Query,
 } from '@nestjs/common';
 import { PatientRepository } from './patient.repository';
 import IPatient from './patient.entity';
@@ -93,9 +94,13 @@ export class PatientController {
     }
 
     @Get('getAll')
-    async getAll() {
+    async getAll(@Query('page') page: string = '1', @Query('pageSize') pageSize: string = '10') {
         try {
-            const patients = await this.repo.getAll();
+            const pageNumber = parseInt(page);
+            const sizeNumber = parseInt(pageSize);
+
+            const patients = await this.repo.getAll(pageNumber, sizeNumber);
+
             return {
                 statusCode: HttpStatus.CREATED,
                 message: 'Get All Patients successfully',

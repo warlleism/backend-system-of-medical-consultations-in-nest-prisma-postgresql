@@ -8,8 +8,27 @@ export class UserRepository {
 
   //CRUD
 
-  async getAll() {
-    return this.prismaService.user.findMany();
+  async getAll(page: number, pageSize: number) {
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+
+    const users = await this.prismaService.user.findMany({
+      skip,
+      take,
+    });
+
+    const total = await this.prismaService.user.count();
+    const sanitizedUsers = users.map(({ password, ...rest }) => rest);
+
+    return {
+      users: sanitizedUsers,
+      pagination: {
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    };
   }
 
   async getOneById(id: number) {

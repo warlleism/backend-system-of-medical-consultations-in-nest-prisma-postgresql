@@ -15,7 +15,6 @@ export class UserModule {
     consumer
       .apply(LoggerMiddleware)
       .forRoutes(
-        { path: 'user/create', method: RequestMethod.POST },
         { path: 'user/getAll', method: RequestMethod.GET },
         { path: 'user/getOneById/:id', method: RequestMethod.GET },
         { path: 'user/delete/:id', method: RequestMethod.DELETE },

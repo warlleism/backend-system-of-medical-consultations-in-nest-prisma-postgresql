@@ -13,21 +13,36 @@ export class AppointmentRepository {
         return result;
     }
 
-    async getAll() {
+    async getAll(page: number, pageSize: number) {
+        const skip = (page - 1) * pageSize;
+        const take = pageSize;
+
         const result = await this.prismaService.$queryRaw<IAppointment[]>`
-   SELECT 
-    a.id as id, 
-    d.name AS "doutor(a)", 
-    d.speciality as "especialidade", 
-    a.appointmentdate AS "dia da consulta", 
-    p.name AS "paciente", 
-    p.gender as "gênero",
-    a.description AS "descrição da consulta"
+    SELECT 
+        a.id as id, 
+        d.name AS "doctor", 
+        d.speciality AS "specialty", 
+        a.appointmentdate AS "appointment_date", 
+        p.name AS "patient", 
+        p.gender AS "gender",
+        a.description AS "appointment_description"
     FROM "Appointment" a 
     INNER JOIN "Doctor" d ON a.doctorid = d.id 
-    INNER JOIN "Patient" p ON a.patientid = p.id;
-    `;
-        return result;
+    INNER JOIN "Patient" p ON a.patientid = p.id
+        LIMIT ${take} OFFSET ${skip};
+        `;
+
+        const total = await this.prismaService.appointment.count();
+
+        return {
+            appointments: result,
+            pagination: {
+                total,
+                page,
+                pageSize,
+                totalPages: Math.ceil(total / pageSize),
+            }
+        };
     }
 
     async getOne(id: number) {

@@ -25,7 +25,7 @@ export class LoggerMiddleware implements NestMiddleware {
       const user = await this.repo.getOneById(+id);
 
       if (!user) {
-        return res.status(401).json({ message: 'Usuário não encontrado' });
+        return res.status(401).json({ message: 'Invalid token' });
       }
 
       const { password: _, ...loggedUser } = user;

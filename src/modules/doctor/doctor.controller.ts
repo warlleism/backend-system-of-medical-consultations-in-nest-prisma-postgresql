@@ -8,6 +8,7 @@ import {
     Param,
     Patch,
     Post,
+    Query,
 } from '@nestjs/common';
 import { DoctorRepository } from './doctor.repository';
 import IDoctor from './doctor.entity';
@@ -99,11 +100,22 @@ export class DoctorController {
     }
 
     @Get('getAll')
-    async getAll() {
+    async getAll(@Query('page') page: string = '1', @Query('pageSize') pageSize: string = '10') {
         try {
-            const doctors = await this.repo.getAll();
+            const pageNumber = parseInt(page);
+            const sizeNumber = parseInt(pageSize);
+
+            if (isNaN(pageNumber) || isNaN(sizeNumber) || pageNumber <= 0 || sizeNumber <= 0) {
+                throw new HttpException({
+                    statusCode: HttpStatus.BAD_REQUEST,
+                    message: 'Invalid pagination parameters',
+                    error: 'Page and pageSize must be positive integers',
+                }, HttpStatus.BAD_REQUEST);
+            }
+
+            const doctors = await this.repo.getAll(pageNumber, sizeNumber);
             return {
-                statusCode: HttpStatus.CREATED,
+                statusCode: HttpStatus.OK,
                 message: 'Get All doctors successfully',
                 data: doctors,
             };

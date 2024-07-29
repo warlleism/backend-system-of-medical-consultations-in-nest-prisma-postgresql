@@ -6,8 +6,26 @@ import IDoctor from "./doctor.entity";
 export class DoctorRepository {
     constructor(private prismaService: PrismaService) { }
 
-    async getAll() {
-        return this.prismaService.doctor.findMany();
+    async getAll(page: number, pageSize: number) {
+        const skip = (page - 1) * pageSize;
+        const take = pageSize;
+
+        const doctors = await this.prismaService.doctor.findMany({
+            skip,
+            take,
+        });
+
+        const total = await this.prismaService.doctor.count();
+
+        return {
+            doctors: doctors,
+            pagination: {
+                total,
+                page,
+                pageSize,
+                totalPages: Math.ceil(total / pageSize),
+            }
+        };
     }
 
     async getOneById(id: number) {

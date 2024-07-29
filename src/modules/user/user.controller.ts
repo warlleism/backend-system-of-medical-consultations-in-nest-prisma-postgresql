@@ -8,6 +8,7 @@ import {
     Param,
     Patch,
     Post,
+    Query,
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import IUser from './user.entity';
@@ -51,14 +52,17 @@ export class UserController {
     }
 
     @Get('getAll')
-    async getAll() {
+    async getAll(@Query('page') page: string = '1', @Query('pageSize') pageSize: string = '10') {
         try {
-            const users = await this.repo.getAll();
-            const sanitizedUsers = users.map(({ password, ...rest }) => rest);
+            const pageNumber = parseInt(page);
+            const sizeNumber = parseInt(pageSize);
+
+            const user = await this.repo.getAll(pageNumber, sizeNumber);
+
             return {
                 statusCode: HttpStatus.CREATED,
                 message: 'Get All Users successfully',
-                data: sanitizedUsers,
+                data: user,
             };
         } catch (error) {
             throw new HttpException({
@@ -72,7 +76,7 @@ export class UserController {
     @Patch('update')
     async update(@Body() user: IUser) {
         try {
-            
+
             if (Object.values(user).some(value =>
                 (typeof value === 'string' && value.trim().length === 0) || value === null || value === undefined
             )) {
