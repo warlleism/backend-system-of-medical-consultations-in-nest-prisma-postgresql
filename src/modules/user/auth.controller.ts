@@ -29,8 +29,6 @@ export class AuthController {
 
             const verifyPass = await bcrypt.compare(user.password, isUser.password);
 
-            console.log(verifyPass)
-
             if (!verifyPass) {
                 throw new Error('Invalid password or email')
             }

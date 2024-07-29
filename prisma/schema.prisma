@@ -45,4 +45,12 @@ model Appointment {
   description     String   @db.Text
   doctor          Doctor   @relation(fields: [doctorid], references: [id])
   patient         Patient  @relation(fields: [patientid], references: [id])
+  Result          Result[]
+}
+
+model Result {
+  id            Int         @id @default(autoincrement())
+  appointmentid Int
+  resultdata    String      @db.Text
+  appointment   Appointment @relation(fields: [appointmentid], references: [id])
 }

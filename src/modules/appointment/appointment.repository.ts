@@ -15,17 +15,17 @@ export class AppointmentRepository {
 
     async getAll() {
         const result = await this.prismaService.$queryRaw<IAppointment[]>`
-    SELECT 
-    a.id AS id, 
-    d.name AS "Doctor", 
-    d.speciality AS "Specialty", 
-    a.appointmentdate AS "Appointment_Date", 
-    p.name AS "Patient", 
-    p.gender AS "Gender",
-    a.description AS "Appointment_Description"
-        FROM "Appointment" a 
-        INNER JOIN "Doctor" d ON a.doctorid = d.id 
-        INNER JOIN "Patient" p ON a.patientid = p.id;
+   SELECT 
+    a.id as id, 
+    d.name AS "doutor(a)", 
+    d.speciality as "especialidade", 
+    a.appointmentdate AS "dia da consulta", 
+    p.name AS "paciente", 
+    p.gender as "gênero",
+    a.description AS "descrição da consulta"
+    FROM "Appointment" a 
+    INNER JOIN "Doctor" d ON a.doctorid = d.id 
+    INNER JOIN "Patient" p ON a.patientid = p.id;
     `;
         return result;
     }
