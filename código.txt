@@ -1,0 +1,27 @@
+//criar container
+docker run --name my-postgres -p 5433:5432 -e POSTGRES_PASSWORD=postgres -d postgres
+
+OU
+
+////criar container banco de dados docker através do docker compose
+docker-compose up -d
+
+//acessar o container
+docker exec -it my-postgres psql -U postgres
+
+//criar banco de dados
+CREATE DATABASE usuarios;
+
+//gerar tabelas - usando prisma
+npx prisma migrate dev --name criando first migration
+
+//limpar cache - quando a senha configurada não passa
+docker-compose down --volumes
+
+
+//bildar dokerfile
+docker build -t warllei/drsdocker .
+
+//startar container (dokerfile)
+docker run -p 3000:3000 <nome do container>
+
