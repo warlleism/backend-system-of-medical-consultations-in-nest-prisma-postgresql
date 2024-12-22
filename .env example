@@ -1,2 +1,7 @@
+#Docker
 DATABASE_URL=postgresql://postgres:4321@host.docker.internal:5433/drs_consultas?schema=public
+
+#Local
+DATABASE_URL = "postgresql://postgres:root@localhost:5432/drs_consultas?schema=public"
 JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
