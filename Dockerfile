@@ -7,6 +7,7 @@ COPY ./.env ./
 COPY prisma ./prisma
 
 COPY package*.json ./
+
 RUN npm install --quiet --no-optional --no-fund --loglevel=error
 
 RUN npx prisma generate
