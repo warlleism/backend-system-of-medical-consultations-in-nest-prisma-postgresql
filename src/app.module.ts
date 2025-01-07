@@ -5,6 +5,7 @@ import { DoctorModule } from './modules/doctor/doctor.module';
 import { PatientModule } from './modules/patient/patient.module';
 import { DbModule } from './db/db.module';
 import { ResultModule } from './modules/result/result.module';
+import { LoggerMiddlewareModule } from './middlewares/logger.middleware.module';
 @Module({
   imports: [
     UserModule,
@@ -13,6 +14,7 @@ import { ResultModule } from './modules/result/result.module';
     PatientModule,
     ResultModule,
     DbModule,
+    LoggerMiddlewareModule
   ],
   controllers: [],
   providers: [],

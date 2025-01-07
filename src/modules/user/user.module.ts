@@ -1,8 +1,7 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { DbModule } from '../../db/db.module';
 import { UserRepository } from './user.repository';
-import { LoggerMiddleware } from '../../middlewares/logger.middleware';
 import { AuthController } from './auth.controller';
 
 @Module({
@@ -10,15 +9,4 @@ import { AuthController } from './auth.controller';
   controllers: [UserController, AuthController],
   providers: [UserRepository],
 })
-export class UserModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes(
-        { path: 'user/getAll', method: RequestMethod.GET },
-        { path: 'user/getOneById/:id', method: RequestMethod.GET },
-        { path: 'user/delete/:id', method: RequestMethod.DELETE },
-        { path: 'user/update', method: RequestMethod.PATCH },
-      );
-  }
-}
+export class UserModule { }

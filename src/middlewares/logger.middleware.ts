@@ -12,6 +12,7 @@ export class LoggerMiddleware implements NestMiddleware {
   constructor(private repo: UserRepository) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
+
     const { authorization } = req.headers;
 
     if (!authorization) {
